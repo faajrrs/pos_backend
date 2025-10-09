@@ -1,19 +1,12 @@
-// {
-//   "categories": [
-//     {
-//       "id": "1",
-//       "nama": "Makanan"
-//     },
-//     {
-//       "id": "2",
-//       "nama": "Minuman"
-//     },
-//     {
-//       "id": "3",
-//       "nama": "Cemilan"
-//     }
-//   ],
-//   "products": [
+// // Data Kategori Menu
+// let categories = [
+//   { "id": "1", "nama": "Makanan" },
+//   { "id": "2", "nama": "Minuman" },
+//   { "id": "3", "nama": "Cemilan" }
+// ];
+
+// // Data Produk Atau Item Menu
+// let products = [
 //     {
 //       "id": "1",
 //       "kode": "K-01",
@@ -181,8 +174,14 @@
 //         "id": 2,
 //         "nama": "Minuman"
 //       }
-//     }
-//   ],
-//   "keranjangs": [],
-//   "pesanans": []
-// }
+//     },
+// ];
+
+// // Data Keranjang Produk Menu
+// let keranjangs = [];
+
+// // Data Pesanan
+// let pesanans = [];
+
+// // Ekspor data agar bisa digunakan di file lain
+// module.exports = { categories, products, keranjangs, pesanans };

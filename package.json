@@ -1,0 +1,28 @@
+{
+  "dependencies": {
+    "@hapi/hapi": "^21.4.3",
+    "mysql2": "^3.15.2",
+    "nanoid": "^5.1.6"
+  },
+  "name": "pos_backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./src/Server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/faajrrs/pos_backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/faajrrs/pos_backend/issues"
+  },
+  "homepage": "https://github.com/faajrrs/pos_backend#readme",
+  "description": ""
+}
