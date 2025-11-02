@@ -53,11 +53,7 @@ CREATE TABLE IF NOT EXISTS `pesanans` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Dumping data for table pos_db.pesanans: ~3 rows (approximately)
-INSERT INTO `pesanans` (`id`, `total_bayar`, `tanggal`) VALUES
-	('pWuiscYz6kR9t2_E', 43000, '2025-10-09 15:43:58'),
-	('Q5gBg_UIH1caCmsV', 155000, '2025-10-09 15:27:08'),
-	('Z-vIhkiLA099sSRG', 47000, '2025-10-09 15:34:11');
+-- Dumping data for table pos_db.pesanans: ~0 rows (approximately)
 
 -- Dumping structure for table pos_db.products
 CREATE TABLE IF NOT EXISTS `products` (

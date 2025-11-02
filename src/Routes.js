@@ -1,9 +1,8 @@
-const { nanoid } = require("nanoid"); // Install dulu: npm install nanoid
-const db = require("./Config"); // <-- Import the database connection pool
-// let { categories, products, keranjangs, pesanans } = require("./MockData");
+const { nanoid } = require("nanoid");
+const db = require("./Config");
 
 const routes = [
-  // 1. Mengambil semua Kategori from database
+  // Mengambil semua Kategori from database
   {
     method: "GET",
     path: "/categories",
@@ -18,7 +17,7 @@ const routes = [
     },
   },
 
-  // 2. Mengambil Produk from database (with filters)
+  // Mengambil Produk from database (with filters)
   {
     method: "GET",
     path: "/products",
@@ -66,7 +65,7 @@ const routes = [
     },
   },
 
-  // 3. Mengambil semua item di Keranjang from database (DENGAN ANTI-CACHE)
+  // Mengambil semua item di Keranjang from database (DENGAN ANTI-CACHE)
   {
     method: "GET",
     path: "/keranjangs",
@@ -120,16 +119,16 @@ const routes = [
     },
   },
 
-  // 4. Menambah item ke Keranjang in database (LOGIKA UPSERT BARU)
+  // Menambah item ke Keranjang in database
   {
     method: "POST",
     path: "/keranjangs",
     handler: async (request, h) => {
       const { jumlah, product, keterangan } = request.payload;
-      const product_id = product.id; // Ambil product ID
+      const product_id = product.id;
 
       try {
-        // 1. CEK: Cari apakah produk sudah ada di keranjang
+        // Cari apakah produk sudah ada di keranjang
         const [existingKeranjang] = await db.query(
           "SELECT id, jumlah FROM keranjangs WHERE product_id = ?",
           [product_id]
@@ -138,7 +137,7 @@ const routes = [
         if (existingKeranjang.length > 0) {
           // JIKA ADA (UPDATE)
           const itemLama = existingKeranjang[0];
-          const newJumlah = itemLama.jumlah + jumlah; // Tambahkan jumlah yang baru // UPDATE JUMLAH DAN KETERANGAN
+          const newJumlah = itemLama.jumlah + jumlah;
 
           const updateQuery =
             "UPDATE keranjangs SET jumlah = ?, keterangan = ? WHERE id = ?";
@@ -173,97 +172,32 @@ const routes = [
     },
   },
 
-  // 5. MENGUPDATE item di Keranjang (JUMLAH & KETERANGAN)
-//   {
-//     method: ["PUT", "PATCH"],
-//     path: "/keranjangs/{id}",
-//     handler: async (request, h) => {
-//       const { id } = request.params;
-//       const { jumlah, keterangan } = request.payload;
+  // MENGUPDATE item di Keranjang (JUMLAH & KETERANGAN)
+  {
+    method: "PUT",
+    path: "/keranjangs/{id}",
+    handler: async (request, h) => {
+      const { id } = request.params;
+      const { jumlah, keterangan } = request.payload;
 
-//       if (typeof jumlah !== "number" || jumlah < 1) {
-//         return h.response({ message: "Jumlah harus angka positif." }).code(400);
-//       }
+      try {
+        const query =
+          "UPDATE keranjangs SET jumlah = ?, keterangan = ? WHERE id = ?";
+        await db.query(query, [jumlah, keterangan, id]);
 
-//       try {
-//         const [keranjangRows] = await db.query(
-//           "SELECT product_id FROM keranjangs WHERE id = ?",
-//           [id]
-//         );
-
-//         if (keranjangRows.length === 0) {
-//           return h
-//             .response({ message: "Item keranjang tidak ditemukan" })
-//             .code(404);
-//         }
-
-//         const productId = keranjangRows[0].product_id;
-//         const [productRows] = await db.query(
-//           "SELECT harga FROM products WHERE id = ?",
-//           [productId]
-//         );
-
-//         if (productRows.length === 0) {
-//           return h
-//             .response({ message: "Produk terkait tidak ditemukan" })
-//             .code(404);
-//         }
-
-//         const harga = productRows[0].harga;
-//         const total_harga = jumlah * harga;
-
-//         const [result] = await db.query(
-//           `UPDATE keranjangs SET jumlah = ?, keterangan = ?, total_harga = ? WHERE id = ?`,
-//           [jumlah, keterangan || null, total_harga, id]
-//         );
-
-//         if (result.affectedRows === 0) {
-//           return h
-//             .response({
-//               message: "Tidak ada perubahan atau item tidak ditemukan",
-//             })
-//             .code(200);
-//         }
-
-//         return h
-//           .response({ message: "Item berhasil diperbarui", total_harga })
-//           .code(200);
-//       } catch (error) {
-//         console.error(
-//           "Error Update Keranjang (Route 8):",
-//           error.message || error
-//         );
-//         return h
-//           .response({ message: "Internal Server Error saat update keranjang" })
-//           .code(500);
-//       }
-//     },
-//   },
-    {
-      method: "PUT",
-      path: "/keranjangs/{id}",
-      handler: async (request, h) => {
-        const { id } = request.params;
-        const { jumlah, keterangan } = request.payload;
-
-        try {
-          const query =
-            "UPDATE keranjangs SET jumlah = ?, keterangan = ? WHERE id = ?";
-          await db.query(query, [jumlah, keterangan, id]);
-
-          return h
-            .response({
-              message: "Keranjang berhasil diperbarui",
-            })
-            .code(200);
-        } catch (error) {
-          console.error(error);
-          return h.response({ message: "Internal Server Error" }).code(500);
-        }
-      },
+        return h
+          .response({
+            message: "Keranjang berhasil diperbarui",
+          })
+          .code(200);
+      } catch (error) {
+        console.error(error);
+        return h.response({ message: "Internal Server Error" }).code(500);
+      }
     },
+  },
 
-  // 6. MENGHAPUS item dari Keranjang (DENGAN KODE STATUS HAPUS YANG TEPAT)
+  // MENGHAPUS item dari Keranjang
   {
     method: "DELETE",
     path: "/keranjangs/{id}",
@@ -287,7 +221,7 @@ const routes = [
     },
   },
 
-  // 7. CHECKOUT (Membuat Pesanan Baru)
+  // CHECKOUT (Membuat Pesanan Baru)
   {
     method: "POST",
     path: "/pesanans",
@@ -328,56 +262,3 @@ const routes = [
 ];
 
 module.exports = routes;
-
-// const routes = [
-//         {
-//         method: 'GET',
-//         path: '/',
-//         handler: (request, h) => {
-
-//             return 'Halaman Home';
-//         },
-//     },
-
-//     {
-//         method: 'GET',
-//         path: '/about',
-//         handler: (require, h) => {
-
-//             return 'Halaman About';
-//         },
-//     },
-
-//     {
-//         method: 'GET',
-//         path: '/user/{name?}',
-//         handler: (require, h) => {
-//             const { name = "Fajar Satria Sebastian" } = require.params;
-//             const { from } = require.query;
-
-//             if ( from === "Indonesia" ) return `Hallo nama saya ${name} dari ${from}`;
-
-//             return `Hallo nama saya ${name}`;
-//         },
-//     },
-
-//     {
-//         method: '*',
-//         path: '/about',
-//         handler: (require, h) => {
-
-//             return 'Halaman ini tidak bisa di akses dengan method!';
-//         },
-//     },
-
-//     {
-//         method: 'GET',
-//         path: '/{any*}',
-//         handler: (require, h) => {
-
-//             return 'Halaman Ini Ditemukan!';
-//         },
-//     },
-//     ]
-
-// module.exports = routes;

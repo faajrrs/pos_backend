@@ -1,18 +1,18 @@
 const Hapi = require('@hapi/hapi');
-const routes = require('./Routes'); // Import file routes
+const routes = require('./Routes');
 
 const init = async () => {
     const server = Hapi.server({
-        port: 5000, // Gunakan port yang berbeda dari frontend (misal: 5000)
+        port: 5000,
         host: 'localhost',
         routes: {
             cors: {
-                origin: ['http://localhost:3000'], // Izinkan akses dari frontend React Anda
+                origin: ['http://localhost:3000'],
             },
         },
     });
 
-    server.route(routes); // Aktifkan baris ini
+    server.route(routes);
 
     await server.start();
     console.log(`Server Hapi.js berjalan di ${server.info.uri}`);
